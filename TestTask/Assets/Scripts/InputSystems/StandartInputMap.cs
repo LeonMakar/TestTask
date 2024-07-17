@@ -22,9 +22,80 @@ public partial class @StandartInputMap: IInputActionCollection2, IDisposable
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""StandartInputMap"",
-    ""maps"": [],
-    ""controlSchemes"": []
+    ""maps"": [
+        {
+            ""name"": ""Ground"",
+            ""id"": ""ceb2f443-5f69-4424-9853-c2f2fe60b9a3"",
+            ""actions"": [
+                {
+                    ""name"": ""HorizontalMovement"",
+                    ""type"": ""Button"",
+                    ""id"": ""97067bb8-4427-4362-bd04-e502dff4e06d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""a268a93d-792b-49c3-99b7-a35fd4129c4f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HorizontalMovement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""ad55cdc6-5361-4015-bc3e-6aedc972da71"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseAndKeyBoard"",
+                    ""action"": ""HorizontalMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""cc17817f-204a-4adc-88bd-064c50c20a45"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseAndKeyBoard"",
+                    ""action"": ""HorizontalMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
+        }
+    ],
+    ""controlSchemes"": [
+        {
+            ""name"": ""MouseAndKeyBoard"",
+            ""bindingGroup"": ""MouseAndKeyBoard"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
+        // Ground
+        m_Ground = asset.FindActionMap("Ground", throwIfNotFound: true);
+        m_Ground_HorizontalMovement = m_Ground.FindAction("HorizontalMovement", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -81,5 +152,64 @@ public partial class @StandartInputMap: IInputActionCollection2, IDisposable
     public int FindBinding(InputBinding bindingMask, out InputAction action)
     {
         return asset.FindBinding(bindingMask, out action);
+    }
+
+    // Ground
+    private readonly InputActionMap m_Ground;
+    private List<IGroundActions> m_GroundActionsCallbackInterfaces = new List<IGroundActions>();
+    private readonly InputAction m_Ground_HorizontalMovement;
+    public struct GroundActions
+    {
+        private @StandartInputMap m_Wrapper;
+        public GroundActions(@StandartInputMap wrapper) { m_Wrapper = wrapper; }
+        public InputAction @HorizontalMovement => m_Wrapper.m_Ground_HorizontalMovement;
+        public InputActionMap Get() { return m_Wrapper.m_Ground; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GroundActions set) { return set.Get(); }
+        public void AddCallbacks(IGroundActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GroundActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GroundActionsCallbackInterfaces.Add(instance);
+            @HorizontalMovement.started += instance.OnHorizontalMovement;
+            @HorizontalMovement.performed += instance.OnHorizontalMovement;
+            @HorizontalMovement.canceled += instance.OnHorizontalMovement;
+        }
+
+        private void UnregisterCallbacks(IGroundActions instance)
+        {
+            @HorizontalMovement.started -= instance.OnHorizontalMovement;
+            @HorizontalMovement.performed -= instance.OnHorizontalMovement;
+            @HorizontalMovement.canceled -= instance.OnHorizontalMovement;
+        }
+
+        public void RemoveCallbacks(IGroundActions instance)
+        {
+            if (m_Wrapper.m_GroundActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGroundActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GroundActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GroundActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GroundActions @Ground => new GroundActions(this);
+    private int m_MouseAndKeyBoardSchemeIndex = -1;
+    public InputControlScheme MouseAndKeyBoardScheme
+    {
+        get
+        {
+            if (m_MouseAndKeyBoardSchemeIndex == -1) m_MouseAndKeyBoardSchemeIndex = asset.FindControlSchemeIndex("MouseAndKeyBoard");
+            return asset.controlSchemes[m_MouseAndKeyBoardSchemeIndex];
+        }
+    }
+    public interface IGroundActions
+    {
+        void OnHorizontalMovement(InputAction.CallbackContext context);
     }
 }
