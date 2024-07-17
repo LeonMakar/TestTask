@@ -5,9 +5,10 @@ using UnityEngine;
 public class MainData : ScriptableObject
 {
     [Header("Enemy Settings")]
-    [Range(0, 100)] public int EnemyKillToWinValue;
     public EnemySpawningTimeInterval EnemySpawningTimeInterval;
     public EnemySpeedValueInterval EnemySpeedValueInterval;
+    public EnemyToKillInterval EnemyToKillInterval;
+
     public int EnemyHealth;
 
     [Space(10), Header("Player Settings")]
@@ -33,4 +34,10 @@ public struct EnemySpeedValueInterval
 {
     public float MinSpeed;
     public float MaxSpeed;
+}
+[Serializable]
+public struct EnemyToKillInterval
+{
+    public int MinCount;
+    public int MaxCount;
 }

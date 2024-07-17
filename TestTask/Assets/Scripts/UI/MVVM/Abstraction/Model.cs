@@ -1,4 +1,5 @@
 
+using System;
 using TestTask.Infrastructure;
 using TestTask.Pools;
 
@@ -20,7 +21,7 @@ namespace TestTask.MVVM
             eventBus.OnHealthChanged += ChangeHealth;
             eventBus.OnEnemyKilled += ChangeScore;
             Health.Value = _gameData.PlayerHealth;
-            EnemyKilled.Value = _gameData.EnemyKillToWinValue;
+            EnemyKilled.Value = UnityEngine.Random.Range(_gameData.EnemyToKillInterval.MinCount, _gameData.EnemyToKillInterval.MaxCount);
         }
 
         private void ChangeScore()
@@ -41,7 +42,7 @@ namespace TestTask.MVVM
         public void RestartGame()
         {
             Health.Value = _gameData.PlayerHealth;
-            EnemyKilled.Value = _gameData.EnemyKillToWinValue;
+            EnemyKilled.Value = UnityEngine.Random.Range(_gameData.EnemyToKillInterval.MinCount, _gameData.EnemyToKillInterval.MaxCount);
             _gameData.GameIsActive = true;
             _enemyPool.RemooveAllObject();
 

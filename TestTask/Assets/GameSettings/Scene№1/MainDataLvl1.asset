@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52ac2b12dc9448a43997d320120ef520, type: 3}
   m_Name: MainDataLvl1
   m_EditorClassIdentifier: 
-  EnemyKillToWinValue: 5
   EnemySpawningTimeInterval:
     MinTime: 2
     MaxTime: 6
   EnemySpeedValueInterval:
     MinSpeed: 0.05
     MaxSpeed: 0.2
+  EnemyToKillInterval:
+    MinCount: 1
+    MaxCount: 5
   EnemyHealth: 15
   ShootRange: 15
   ShootRate: 0.5
   ShootDamage: 5
   BulletSpeed: 10
   PlayerHealth: 5
-  GameIsActive: 1
+  GameIsActive: 0
